@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.ua.eshepelyuk:ManifestClasspath:1.0.0"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
+}
+plugins {
+    id 'java'
+}
+apply plugin: "ua.eshepelyuk.ManifestClasspath"
+apply plugin: 'com.github.johnrengelman.shadow'
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    //由于国内可能无法正常访问maven中心库，这里就填写了两个基本上能正常访问的maven库地址
+    maven {
+        url 'http://maven.aliyun.com/nexus/content/groups/public/'
+    }
+    maven {
+        url 'https://repository.cloudera.com/artifactory/cloudera-repos/'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.42.Final'
+    
+    // https://mvnrepository.com/artifact/com.lmax/disruptor
+    compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+
+    // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
+    compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.1.0-cdh6.2.1'
+
+}
+jar {
+    archiveBaseName.set('KafkaSendTest')
+    archiveAppendix.set('wy')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('release')
+    archiveExtension.set('jar')
+    manifest {
+        attributes 'Main-Class': 'Netty.LTPCClient.KafkaSendTest'
+    }
+    zip64 true
+}
+shadowJar {
+    archiveBaseName.set('FixedLength')
+    archiveAppendix.set('ClientNetty')
+    archiveVersion.set('shadow')
+    archiveClassifier.set('release')
+    archiveExtension.set('jar')
+    manifest {
+        attributes 'Main-Class': 'Netty.LTPCClient.ClientNetty'
+    }
+    zip64 true
+}
